@@ -147,7 +147,9 @@ class IndexPsana:
         self.submitry = [None for _ in commList]
         self.submitus = [None for _ in commList]
         self.jobids = [None for _ in commList]
-
+        if not os.path.isdir(self.outDir):
+            os.makedirs(self.outDir)
+            
         ## launch the command
         import shlex
         for idx,comm in enumerate(commList):
