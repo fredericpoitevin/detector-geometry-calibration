@@ -31,6 +31,8 @@ class IndexPsana:
         self.fcell = fcell 
         self.outDir = os.path.realpath(outDir)
         self.kwargs = kwargs
+        if not os.path.isdir(self.outDir):
+            os.makedirs(self.outDir)
 
     def _q(self):
         return self.kwargs.get("queue") or "psanaq"
