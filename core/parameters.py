@@ -1,8 +1,7 @@
 import os,sys
 import psana
 import numpy as np
-sys.apth.append("/reg/neh/home5/zhensu/Develop/autosfx")
-from core.experiment import myExp
+from core.experiment import Exp
 
 
 class Path:
@@ -35,7 +34,3 @@ class Path:
         self.smask = os.path.join(self.runDir,"staticMask.h5")
         self.pmask = os.path.join(self.runDir,"psanaMask.npy")
 
-
-class Params:
-    def __init__(self):
-        pass 
