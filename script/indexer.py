@@ -58,7 +58,7 @@ class IndexPsana:
         return self.kwargs.get("chunkSize") or 500
 
     def _i(self):
-        return self.lstList or IndexPsana.make_list(cxiList=self.cxiList,tag=None,\
+        return self.lstList or IndexPsana.make_list(cxiList=self.cxiList,indextag=None,\
                     likelihood=self._likelihood(),chuckSize=self._chunkSize())
 
     def _g(self): 
