@@ -224,7 +224,7 @@ class IndexPsana:
         # job not tried to submit
         if not self.submitry:
             return "waiting"
-        for jobid in jobids:
+        for jobid in self.jobids:
             if jobid is None:
                 break
             self.monitor.killjob(jobid)
