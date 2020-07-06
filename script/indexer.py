@@ -33,8 +33,7 @@ class IndexPsana:
             self.outDir = os.path.realpath("./")
         else:
             self.outDir = os.path.realpath(outDir)
-        if not hasattr(self,"kwargs"):
-            self.kwargs = {}
+        self.kwargs = kwargs
 
     def _q(self):
         return self.kwargs.get("queue") or "psanaq"
@@ -63,8 +62,11 @@ class IndexPsana:
         return self.kwargs.get("chunkSize") or 500
 
     def _i(self):
-        return self.lstList or IndexPsana.make_list(cxiList=self.cxiList,indextag=None,\
+        if not self.lstList:
+            self.lstList = IndexPsana.make_list(cxiList=self.cxiList,indextag=self.kwargs.get("indextag"),\
                     likelihood=self._likelihood(),chuckSize=self._chunkSize())
+            return self.lstList
+        return self.lstList
 
     def _g(self): 
         return self.fcrystfel
@@ -107,7 +109,7 @@ class IndexPsana:
         for idx,flst in enumerate(self._i()):
             comm = Command("bsub")
             comm.args("-q",self._q()) 
-            comm.args("-o",self._flog())
+            comm.args("-o",self._flog()+"-%.4d"%idx)
             comm.args("-J",self._J())
             comm.add("-n 1 -x indexamajig -j '`nproc`'") 
             comm.args("-i",flst) 
@@ -153,7 +155,7 @@ class IndexPsana:
 
         self.submitry = [None for _ in commList]
         self.submitus = [None for _ in commList]
-        self.jobids = [None for _ in commList]
+        self.jobids   = [None for _ in commList]
         if not os.path.isdir(self.outDir):
             os.makedirs(self.outDir)
 
