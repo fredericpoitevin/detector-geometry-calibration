@@ -181,7 +181,7 @@ class IndexPsana:
 
             import re
             jobid = re.findall("<(.*?)>",out)
-            print out, jobid
+            # print out, jobid
             if len(jobid)==0:
                 print "!! submission failed"
                 try: p.terminate()
@@ -190,6 +190,8 @@ class IndexPsana:
                 except: pass
                 self.submitus[idx] = False
                 return False
+            if len(jobid)==2:
+                jobid = jobid[0]
 
             self.jobids[idx] = jobid
             self.submitus[idx] = True
