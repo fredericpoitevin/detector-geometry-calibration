@@ -27,6 +27,8 @@ class IndexPsana:
         self.submitry = None
         self.submitus = None
         self.monitor  = monitor
+        self.fcrystfel = fcrystfel
+        self.fcell = fcell 
         if not os.path.isdir(outDir):
             self.outDir = os.path.realpath("./")
         else:
