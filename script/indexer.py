@@ -29,10 +29,7 @@ class IndexPsana:
         self.monitor  = monitor
         self.fcrystfel = fcrystfel
         self.fcell = fcell 
-        if not os.path.isdir(outDir):
-            self.outDir = os.path.realpath("./")
-        else:
-            self.outDir = os.path.realpath(outDir)
+        self.outDir = os.path.realpath(outDir)
         self.kwargs = kwargs
 
     def _q(self):
