@@ -1,7 +1,5 @@
 import numpy as np
 import os,sys
-
-sys.apth.append("/reg/neh/home5/zhensu/Develop/autosfx")
 from core.experiment import Exp
 from core.params import Path
 
