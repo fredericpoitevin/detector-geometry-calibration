@@ -57,7 +57,7 @@ class IndexPsana:
 
     def _i(self):
         return self.lstList or IndexPsana.make_list(cxiList=self.cxiList,tag=None,\
-                    likelihood=self._likelihood(),chuckSize=self._chunkSize()):
+                    likelihood=self._likelihood(),chuckSize=self._chunkSize())
 
     def _g(self): 
         return self.fcrystfel
@@ -149,7 +149,7 @@ class IndexPsana:
         self.jobids = [None for _ in commList]
         if not os.path.isdir(self.outDir):
             os.makedirs(self.outDir)
-            
+
         ## launch the command
         import shlex
         for idx,comm in enumerate(commList):
