@@ -242,13 +242,13 @@ class IndexPsana:
         return fstream
 
     @staticmethod
-    def make_list(cxiList=[],tag=None,likelihood=0.,chuckSize=500):
+    def make_list(cxiList=[],indextag=None,likelihood=0.,chuckSize=500):
         ## make **.lst files for indexamajig
         listfiles = []
         if len(cxiList) == 0:
             return listfiles
 
-        marker = tag or self.kwargs.get("indextag") or random_string(12)
+        marker = indextag or random_string(12)
         dataline = []
         for fcxi in cxiList:
             if not os.path.isfile(fcxi):
