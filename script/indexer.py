@@ -116,13 +116,15 @@ class IndexPsana:
             comm.add("--peaks=%s"%self._peaks())
             comm.add("--int-radius=%s"%self._int_radius())
             comm.add("--indexing=%s"%self._indexing())
-            comm.args("-o", os.path.join(self.outDir, "%s_%.4d.stream"%(stream_marker,idx)) )
+            fstream = os.path.join(self.outDir, "%s_%.4d.stream"%(stream_marker,idx))
+            comm.args("-o", fstream)
             comm.add("--temp-dir=%s"%self._temp_dir())
             comm.add("--tolerance=%s"%self._tolerance())
             comm.add("--pdb=%s"%self._pdb())
             comm.add("--profile")
             comm.add("--no-revalidate")
             commList.append(comm.command())
+            streamList.append(fstream)
 
         self.fstreams = streamList
         return commList
@@ -134,11 +136,6 @@ class IndexPsana:
             return None
         if len(self.fstreams)<1:
             return None
-        if len(self.fstreams)==1:
-            if not fstreams:
-                return self.fstreams[0]
-            from shutil import copyfile
-            copyfile(self.fstreams[0], fstream)
         ## has multiple stream files
         print("## merge into: %s"%fstream)
         outfile = IndexPsana.stream_merge(streamList=self.fstreams,outDir=self.outDir,fstream=fstream,indextag=self.kwargs.get("indextag"))
