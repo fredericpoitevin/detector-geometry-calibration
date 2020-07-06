@@ -181,6 +181,7 @@ class IndexPsana:
 
             import re
             jobid = re.findall("<(.*?)>",out)
+            print out, jobid
             if len(jobid)==0:
                 print "!! submission failed"
                 try: p.terminate()
@@ -219,6 +220,11 @@ class IndexPsana:
             if _status in ["done","waiting"]:
                 return True
             time.sleep(2)
+        if _status:
+            fstream = self.merge()
+            self.fstream = fstream
+        else:
+            self.fstream = None
 
     def stop(self):
         # job not tried to submit
