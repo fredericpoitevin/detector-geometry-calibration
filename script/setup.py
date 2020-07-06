@@ -20,7 +20,7 @@ from core.params import Path
 
 class Setup(Path):
     def __init__(self,expName=None,runNumber=None,detName=None,outDir=None):
-        super(myPath,self).__init__(expName,runNumber,detName,outDir)
+        super(myPath,self).__init__(expName,runNumber,outDir)
         self.exp = myExp(expName,runNumber,detName)
         try: self.exp.Det
         except: pass 
@@ -53,7 +53,7 @@ class Setup(Path):
             return True
         ## not ready
         if not self.path_ready():
-            success = success and self.path_make()
+            self.path_make()
         if not self.geom_ready():
             self.geom_make()
         if not self.pmask_ready():

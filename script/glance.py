@@ -46,7 +46,7 @@ class Powder:
 
     def command(self):
         flaunch = os.path.realpath(__file__)
-        flaunch = os.path.join(os.path.dirname(flaunch),"./scripts/powdersum.py")
+        flaunch = os.path.join(os.path.dirname(flaunch),"./powdersum.py")
         if not os.path.isfile(flaunch):
             print "!! File not exists"
             return None

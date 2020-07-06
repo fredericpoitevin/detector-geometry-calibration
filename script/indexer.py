@@ -1,15 +1,14 @@
 import time
 import os,sys
-import subprocess
-from core.experiment import Exp
-from core.parameters import Path
-from packg.util import WorkerBsubPsana,random_string,Command
+PATH = os.path.realpth(__file__+"/../../")
+if PATH not in sys.path:
+    sys.path.append(PATH)
+from script.util import WorkerBsubPsana as qmonitor
+from script.util import random_string,Command
 
 # TODO: slurm job status
-
-class IndexerServer:
-    def __init__(self,cxiList=None,lstList=None,fcell=None,outDir=None,\
-                fcrystfel=None,WorkerStatus=WorkerBsubPsana,**kwargs):
+class IndexPsana:
+    def __init__(self,cxiList=None,lstList=None,fcell=None,outDir="./",fcrystfel=None,monitor=qmonitor,**kwargs):
         ## ncpus,noe,queue,
         """
         bsub -q psanaq -o /reg/data/ana03/scratch/zhensu/expers/mfx13016/mfx13016/zhensu/psocake/r0037/.%J.log \
@@ -22,16 +21,13 @@ class IndexerServer:
         """
         self.cxiList  = cxiList
         self.lstList  = lstList
-        self.submitry = False
-        self.submitus = False
-
-    def index_top_likelihood(N=10):
-        # select with likelihood 
-        return 
-
-    def scan_center_detz(N=10):
-        # scan every 3 pixels
-        return 
+        self.submitry = None
+        self.submitus = None
+        self.monitor  = monitor
+        if not os.path.isdir(outDir):
+            self.outDir = os.path.realpath("./")
+        else:
+            self.outDir = os.path.realpath(outDir)
 
     def _q(self):
         return self.kwargs.get("queue") or "psanaq"
@@ -41,7 +37,7 @@ class IndexerServer:
             return self.flog
         if self.kwargs.get("flog"):
             return self.kwargs.get("flog")
-        self.flog = os.path.join(self.path.runDir,"./peakfinder_%s.log"%random_string(12))
+        self.flog = os.path.join(self.outDir,"./indexer_%s.log"%random_string(12))
         self.flog = os.path.realpath(self.flog)
         return self.flog
 
@@ -60,7 +56,7 @@ class IndexerServer:
         return self.kwargs.get("chunkSize") or 500
 
     def _i(self):
-        return self.lstList or Indexer.make_list(cxiList=self.cxiList,marker=None,\
+        return self.lstList or IndexPsana.make_list(cxiList=self.cxiList,tag=None,\
                     likelihood=self._likelihood(),chuckSize=self._chunkSize()):
 
     def _g(self): 
@@ -98,7 +94,8 @@ class IndexerServer:
         streamList = []
         if self._i() is None or len(self._i())==0:
             return commList
-        marker = random_string(12)
+
+        stream_marker = self.kwargs.get("indextag") or random_string(12) 
 
         for idx,flst in enumerate(self._i()):
             comm = Command("bsub")
@@ -111,7 +108,7 @@ class IndexerServer:
             comm.add("--peaks=%s"%self._peaks())
             comm.add("--int-radius=%s"%self._int_radius())
             comm.add("--indexing=%s"%self._indexing())
-            comm.args("-o", os.path.join(self.outDir or "./", "%s_%.3d.stream"%(self._J(),idx)) )
+            comm.args("-o", os.path.join(self.outDir, "%s_%.4d.stream"%(stream_marker,idx)) )
             comm.add("--temp-dir=%"%self._temp_dir())
             comm.add("--tolerance=%s"%self._tolerance())
             comm.add("--pdb=%s"%self._pdb())
@@ -132,40 +129,47 @@ class IndexerServer:
         if len(self.fstreams)==1:
             if not fstreams:
                 return self.fstreams[0]
-            else:
-                from shutil import copyfile
-                copyfile(self.fstreams[0], fstream)
+            from shutil import copyfile
+            copyfile(self.fstreams[0], fstream)
         ## has multiple stream files
-        outfile = stream_merge(streamList=self.fstreams,outDir=self.outDir,fstream=fstream,marker=self.marker)
+        print("## merge into: %s"%fstream)
+        outfile = IndexPsana.stream_merge(streamList=self.fstreams,outDir=self.outDir,fstream=fstream,indextag=self.kwargs.get("indextag"))
         return outfile
 
-
-    def launchSingle(self):
+    def launch(self):
         ## TODO: cases that submission failed
         commList = self.command()
         if commList is None:
             return False
         if len(commList)==0:
             return False
+
+        self.submitry = [None for _ in commList]
+        self.submitus = [None for _ in commList]
+        self.jobids = [None for _ in commList]
+
         ## launch the command
         import shlex
-
-        self.submitry = True
-        for comm in commList:
+        for idx,comm in enumerate(commList):
             try:
+                import subprocess
+                self.submitry[idx] = True
                 p = subprocess.Popen(shlex.split(comm),stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 out,err = p.communicate()
                 time.sleep(5)
             except Exception as err:
                 print "!! err submission",err
+                self.submitus[idx] = False
                 return False
 
+            # submitted but has error message
             if err:
                 print "!! err to submit jobs", err
                 try: p.terminate()
                 except: pass 
                 try: p.kill()
                 except: pass 
+                self.submitus[idx] = False
                 return False
 
             import re
@@ -176,20 +180,28 @@ class IndexerServer:
                 except: pass 
                 try: p.kill()
                 except: pass
+                self.submitus[idx] = False
                 return False
 
-        self.submitus = True
-        return True
+            self.jobids[idx] = jobid
+            self.submitus[idx] = True
+
+        self.start_time = time.time()
 
     def status(self):
+        # job not tried to submit
         if not self.submitry:
             return "waiting"
-        if not self.submitus:
+        # not all jobs tried to submit
+        if not all(self.submitry):
             return "failed"
-        return WorkerBsubPsana.status_jobname(self._jname())
+        # some jobs are failed in submission
+        if not all(self.submitus):
+            return "failed"
+        # all jobs are submiited
+        return self.monitor.status_jobname(self._J())
 
     def wait(self):
-        import time
         start_time = time.time()
         while True:
             if time.time() - start_time > 3600.*5:
@@ -202,24 +214,22 @@ class IndexerServer:
             time.sleep(2)
 
     def stop(self):
+        # job not tried to submit
         if not self.submitry:
-            return True
-        if not self.submitus:
-            return True
-        jobids = WorkerBsubPsana.jobname2ids(self._jname())
-        if len(jobids) == 0:
-            return True
+            return "waiting"
         for jobid in jobids:
-            WorkerBsubPsana.killjob(jobid)
+            if jobid is None:
+                break
+            self.monitor.killjob(jobid)
         return True
 
     @staticmethod
-    def stream_merge(streamList=[],outDir="./",fstream=None,marker=None):
+    def stream_merge(streamList=[],outDir="./",fstream=None,indextag=None):
         ## merge multiple stream files
         if len(streamList)==0:
             return None
         if fstream is None:
-            fstream = (marker or random_string(12)) + ".stream"
+            fstream = (indextag or random_string(12)) + ".stream"
             fstream = os.path.join(os.path.realpath(outDir),fstream)
 
         with open(fstream,"w") as fw:
@@ -230,13 +240,13 @@ class IndexerServer:
         return fstream
 
     @staticmethod
-    def make_list(cxiList=[],marker=None,likelihood=0.,chuckSize=500):
+    def make_list(cxiList=[],tag=None,likelihood=0.,chuckSize=500):
         ## make **.lst files for indexamajig
         listfiles = []
         if len(cxiList) == 0:
             return listfiles
 
-        marker = marker or random_string(12)
+        marker = tag or self.kwargs.get("indextag") or random_string(12)
         dataline = []
         for fcxi in cxiList:
             if not os.path.isfile(fcxi):

@@ -34,3 +34,14 @@ class Path:
         self.smask = os.path.join(self.runDir,"staticMask.h5")
         self.pmask = os.path.join(self.runDir,"psanaMask.npy")
 
+    def dir_make(self):
+        if self.outDir is None:
+            return 
+        if not os.path.isdir(self.outDir):
+            os.makedirs(self.outDir)
+
+        if self.runDir is None:
+            return 
+        if not os.path.isdir(self.runDir):
+            os.makedirs(self.runDir)
+
