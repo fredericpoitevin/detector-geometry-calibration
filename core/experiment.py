@@ -198,7 +198,7 @@ class Exp(object):
         return self.__det__
 
     def check_det(self,detName=None):
-        if myExp(self.expName,self.runNumber,detName).distance is not None:
+        if Exp(self.expName,self.runNumber,detName).distance is not None:
             return True
         return False
 
