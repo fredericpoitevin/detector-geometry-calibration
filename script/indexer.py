@@ -28,6 +28,8 @@ class IndexPsana:
             self.outDir = os.path.realpath("./")
         else:
             self.outDir = os.path.realpath(outDir)
+        if not hasattr(self,"kwargs"):
+            self.kwargs = {}
 
     def _q(self):
         return self.kwargs.get("queue") or "psanaq"
