@@ -116,7 +116,7 @@ class IndexPsana:
             comm.add("--int-radius=%s"%self._int_radius())
             comm.add("--indexing=%s"%self._indexing())
             comm.args("-o", os.path.join(self.outDir, "%s_%.4d.stream"%(stream_marker,idx)) )
-            comm.add("--temp-dir=%"%self._temp_dir())
+            comm.add("--temp-dir=%s"%self._temp_dir())
             comm.add("--tolerance=%s"%self._tolerance())
             comm.add("--pdb=%s"%self._pdb())
             comm.add("--profile")
