@@ -1,6 +1,6 @@
 import time
 import os,sys
-PATH = os.path.realpth(__file__+"/../../")
+PATH = os.path.realpath(__file__+"/../../")
 if PATH not in sys.path:
     sys.path.append(PATH)
 from script.util import WorkerBsubPsana as qmonitor
