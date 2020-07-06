@@ -261,7 +261,7 @@ class Command:
     def args(self,mark,value,ignore=[None,""]):
         if value in ignore:
             return self
-        self.comm += " " + str(self.mark) + " " + str(value)
+        self.comm += " " + str(mark) + " " + str(value)
         return self
 
     def add(self,mark,ignore=[None,""]):
