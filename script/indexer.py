@@ -64,7 +64,7 @@ class IndexPsana:
     def _i(self):
         if not self.lstList:
             self.lstList = IndexPsana.make_list(cxiList=self.cxiList,indextag=self.kwargs.get("indextag"),\
-                    likelihood=self._likelihood(),chuckSize=self._chunkSize())
+                    likelihood=self._likelihood(),chuckSize=self._chunkSize(),outDir=self.outDir)
             return self.lstList
         return self.lstList
 
@@ -251,7 +251,7 @@ class IndexPsana:
         return fstream
 
     @staticmethod
-    def make_list(cxiList=[],indextag=None,likelihood=0.,chuckSize=500):
+    def make_list(cxiList=[],indextag=None,likelihood=0.,chuckSize=500,outDir="./"):
         ## make **.lst files for indexamajig
         listfiles = []
         if len(cxiList) == 0:
@@ -284,8 +284,9 @@ class IndexPsana:
         else:
             nfiles = int(nfiles)
 
+        outDir = os.path.realpath(outDir)
         for idxfile in range(nfiles):
-            listfile = "%s_%.3d.lst"%(marker,idxfile)
+            listfile = "%s/%s_%.3d.lst"%(outDir,marker,idxfile)
             with open(listfile,"w") as f:
                 f.writelines(dataline[(idxfile*chuckSize):((idxfile*chuckSize+chuckSize))])
             listfiles.append(listfile)
