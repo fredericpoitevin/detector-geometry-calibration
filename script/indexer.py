@@ -297,8 +297,3 @@ class IndexPsana:
         return listfiles
 
 
-class IndexerLocal:
-    ## run command locally quickly
-    def __init__(self):
-        pass 
-
