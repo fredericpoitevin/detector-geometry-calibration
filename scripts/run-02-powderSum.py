@@ -1,4 +1,5 @@
 import psana
+import os,sys
 import numpy as np
 from mpidata import mpidata
 import utils as utils
@@ -17,6 +18,7 @@ parser.add_argument("-exp", "--exp", help="experiment name", default=None, type=
 parser.add_argument("-run", "--run", help="run number", default=None, type=int)
 parser.add_argument("-noe", "--noe", help="number of images", default=3000, type=int)
 parser.add_argument("-det", "--det", help="detector alias (e.g. DscCsPad)", default=None, type=str)
+parser.add_argument("-outDir", "--outDir", help="", default="./", type=str)
 args = parser.parse_args()
 
 if args.det is None:
@@ -68,11 +70,11 @@ def runmaster(args):
         nClients -= 1
     
     print "##### Total number of images: %s/%s " % (str(counter), str(args.noe))
-    params = experiparams(experimentName=args.exp, runNumber=args.run)
-    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_"+str(args.det)+"_max_assem.npy", det.image(evt, max_img))
-    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_"+str(args.det)+"_max.npy", max_img)
-    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_"+str(args.det)+"_mean_assem.npy", det.image(evt, mean_img/counter))
-    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_"+str(args.det)+"_mean.npy", mean_img/counter)
+    params = experiparams(experimentName=args.exp, runNumber=args.run, outDir=os.path.realpath(args.outDir))
+    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_max_assem.npy", det.image(evt, max_img))
+    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_max.npy", max_img)
+    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_mean_assem.npy", det.image(evt, mean_img/counter))
+    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_mean.npy", mean_img/counter)
     print "## saving the average powder pattern to: %s" % params.cxiDir
 
 
