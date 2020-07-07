@@ -72,8 +72,9 @@ class experiparams:
         from experiment import myExp
         exp = myExp(self.experimentName,self.runNumber,self.detectorName)
         exp.Det 
-        self.clen = exp.clen 
+        self.clen = exp.clen or 0.0
         self.clenEpics = exp.clenEpics
+        print(self.clen, self.clenEpics) 
                  
         self.detectorDistance = np.mean(det.coords_z(evt))*1.0e-6 
         self.coffset = self.detectorDistance - self.clen 
