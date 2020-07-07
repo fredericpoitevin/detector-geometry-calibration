@@ -199,7 +199,8 @@ class myExp(object):
 
     def check_det(self,detName=None):
         if myExp(self.expName,self.runNumber,detName).distance is not None:
-            return True
+            if myExp(self.expName,self.runNumber,detName).clenEpics is not None:
+                return True
         return False
 
     def search_dets(self,detList=[]):
