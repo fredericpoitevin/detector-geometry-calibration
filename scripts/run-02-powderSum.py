@@ -1,7 +1,8 @@
 import psana
 import numpy as np
-from scripts.mpidata import mpidata
-import scripts.utils as utils
+from mpidata import mpidata
+import utils as utils
+from expParams import experiparams
 
 from mpi4py import MPI
 comm = MPI.COMM_WORLD
@@ -18,9 +19,19 @@ parser.add_argument("-noe", "--noe", help="number of images", default=3000, type
 parser.add_argument("-det", "--det", help="detector alias (e.g. DscCsPad)", default=None, type=str)
 args = parser.parse_args()
 
-
+if args.det is None:
+    from experiment import myExp
+    runs = [args.run]
+    exp = myExp(args.exp,runs[0])
+    try: exp.Det
+    except: pass 
+    args.det = exp.detName
+    print args.det 
+    
 def runmaster(args):
+
     exprun = "exp="+str(args.exp)+":run="+str(args.run)
+    
     ds = psana.DataSource(exprun+':idx')
     run = ds.runs().next()
     det = psana.Detector(args.det)
@@ -33,7 +44,8 @@ def runmaster(args):
         counter += 1
 
     max_img = None
-    mean_img = None 
+    mean_img = None
+    median_img = None 
 
     ## counter is a monitor to record how many images have been process in total
     ## nClients is the number of clients to process the data
@@ -46,7 +58,8 @@ def runmaster(args):
 
         if max_img is None:
             max_img = md.max_img
-            mean_img = md.mean_img 
+            mean_img = md.mean_img
+            median_img = md.median_img 
         else:
             max_img = np.maximum(max_img, md.max_img)
             mean_img = (mean_img * counter + md.mean_img * md.small.counter)*1.0/(counter + md.small.counter)
@@ -80,7 +93,8 @@ def runclient(args):
         args.noe = min(eventTotal, args.noe)
 
     max_img = None
-    mean_img = None 
+    mean_img = None
+    median_img = None
     square_img = None
 
     counter = 0
@@ -98,10 +112,12 @@ def runclient(args):
             continue
         if max_img is None:
             max_img = img
-            mean_img = img 
+            mean_img = img
+            median_img = img 
         else:
             max_img = np.maximum(max_img, img)
             mean_img = (mean_img * counter + img)*1.0/(counter+1)
+            median_img = utils.guessStreamMedian(median_img, img) 
         counter += 1
 
         print "##### Rank %3d is processing event %3d/%d" % (comm_rank, nevent, args.noe)
@@ -109,7 +125,8 @@ def runclient(args):
     print "##### Rank %3d processed %3d/%d" % (comm_rank, counter, args.noe)
     md=mpidata()
     md.addarray('max_img', max_img)      
-    md.addarray('mean_img', mean_img)  
+    md.addarray('mean_img', mean_img) 
+    md.addarray('median_img', median_img) 
     md.small.counter = counter
     md.send()
 

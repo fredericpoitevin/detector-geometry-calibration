@@ -2,7 +2,7 @@ import psana
 import os,sys
 import numpy as np
 
-class Exp(object):
+class myExp(object):
     def __init__(self,expName=None,runNumber=None,detName=None):
         self.__expName__   = expName
         self.__runNumber__ = runNumber
@@ -198,7 +198,7 @@ class Exp(object):
         return self.__det__
 
     def check_det(self,detName=None):
-        if Exp(self.expName,self.runNumber,detName).distance is not None:
+        if myExp(self.expName,self.runNumber,detName).distance is not None:
             return True
         return False
 
