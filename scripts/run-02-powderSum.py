@@ -71,10 +71,10 @@ def runmaster(args):
     
     print "##### Total number of images: %s/%s " % (str(counter), str(args.noe))
     params = experiparams(experimentName=args.exp, runNumber=args.run, outDir=os.path.realpath(args.outDir))
-    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_"+str(args.det)+"_max_assem.npy", det.image(evt, max_img))
-    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_"+str(args.det)+"_max.npy", max_img)
-    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_"+str(args.det)+"_mean_assem.npy", det.image(evt, mean_img/counter))
-    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_"+str(args.det)+"_mean.npy", mean_img/counter)
+    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_max_assem.npy", det.image(evt, max_img))
+    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_max.npy", max_img)
+    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_mean_assem.npy", det.image(evt, mean_img/counter))
+    np.save(params.cxiDir+"/"+args.exp+"_"+str(args.run).zfill(4)+"_mean.npy", mean_img/counter)
     print "## saving the average powder pattern to: %s" % params.cxiDir
 
 
