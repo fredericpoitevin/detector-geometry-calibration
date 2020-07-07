@@ -28,9 +28,10 @@ if args.det is None:
     exp = myExp(args.exp,runs[0])
     try: exp.Det
     except: pass 
-    args.det = exp.detName
+    args.det = exp.detName 
     print args.det 
     
+print("run list: ", get_run(args.run))
 for run in get_run(args.run):
     pf = pfHelper.peakFinderHelper(args.exp, run, args.det, args.outDir)
     pf.setDefaultParams()
