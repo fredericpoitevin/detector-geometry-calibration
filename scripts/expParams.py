@@ -69,31 +69,11 @@ class experiparams:
 
         
         self.instrument = det.instrument()        
-        if 'cspad2x2' in self.detectorName.lower():
-                self.parent.clen = 0.0  
-        elif 'cspad' in self.detectorName.lower() and 'cxi' in self.experimentName:
-            try:
-                self.clenEpics = str(self.detectorName)+'_z'              # detInfo_z
-                self.clen = epics.value(self.clenEpics) / 1000.
-            except:
-                if 'ds1' in self.detectorName.lower():
-                    self.clenEpics = str('CXI:DS1:MMS:06.RBV')
-                    self.clen = epics.value(self.clenEpics) / 1000.
-                elif 'ds2' in self.detectorName.lower():
-                    self.clenEpics = str('CXI:DS2:MMS:06.RBV')
-                    self.clen = epics.value(self.clenEpics) / 1000.
-                else:
-                    print "Couldn't handle detector clen."
-                    exit()
-        elif ('rayonix' in self.detectorName.lower() and 'mfx' in self.experimentName) or \
-                 ('cspad' in self.detectorName.lower() and 'mfx' in self.experimentName):
-                self.clenEpics =  str('MFX:DET:MMS:04.RBV') #'Rayonix_z'
-                try:
-                    self.clen = epics.value(self.clenEpics) / 1000.
-                except:
-                    print "ERROR: No such epics variable, ", self.clenEpics
-                    print "ERROR: setting clen to 0.0 metre"
-                    self.clen = 0.0  
+        from experiment import myExp
+        exp = myExp(self.experimentName,self.runNumber,self.detectorName)
+        exp.Det 
+        self.clen = exp.clen 
+        self.clenEpics = exp.clenEpics
                  
         self.detectorDistance = np.mean(det.coords_z(evt))*1.0e-6 
         self.coffset = self.detectorDistance - self.clen 
