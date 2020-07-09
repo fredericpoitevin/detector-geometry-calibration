@@ -15,6 +15,12 @@ export PATH="/reg/neh/home5/${USER}/.local/bin:$PATH"
 ```
 
 ## Usage
-```
+### CLI
+```bash
 autosfx  *command*
+```
+### as a python module
+```python
+import autosfx
+autosfx.__version__
 ```
