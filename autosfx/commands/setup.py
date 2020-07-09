@@ -1,4 +1,5 @@
-from expSetup import setupNewRun
+from autosfx.expSetup import setupNewRun
+
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("-exp", "--exp", help="experiment name", default="", type=str)

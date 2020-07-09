@@ -1,0 +1,10 @@
+name: autosfx
+channels:
+  - conda-forge
+  - omnia
+  - defaults
+dependencies:
+  - python=2.7
+  - scipy
+  - h5py
+
