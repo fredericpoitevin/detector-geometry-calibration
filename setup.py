@@ -2,7 +2,6 @@ import setuptools
 from io import open
 
 requirements = [
-    'psana',
     'numpy',
     'h5py',
     'scipy',
