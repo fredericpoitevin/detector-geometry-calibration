@@ -17,7 +17,17 @@ export PATH="/reg/neh/home5/${USER}/.local/bin:$PATH"
 ## Usage
 ### CLI
 ```bash
-autosfx  *command*
+(ana-1.5.11) [fpoitevi@pslogin01 autosfx]$ autosfx -h
+usage: autosfx [-h] [--version] {setup} ...
+
+AutoSFX
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --version   show program's version number and exit
+
+Choose a command:
+  {setup}
 ```
 ### as a python module
 ```python

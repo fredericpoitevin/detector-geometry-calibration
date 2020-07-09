@@ -7,18 +7,18 @@ def main():
     parser.add_argument('--version', action='version', version='autosfx '+autosfx.__version__)
 
     import autosfx.commands.setup
-    import autosfx.commands.powdersum
-    import autosfx.commands.centerfinder
-    import autosfx.commands.peakfinder
-    import autosfx.commands.indexer
-    import autosfx.commands.distoptimizer
+    #import autosfx.commands.powdersum
+    #import autosfx.commands.centerfinder
+    #import autosfx.commands.peakfinder
+    #import autosfx.commands.indexer
+    #import autosfx.commands.distoptimizer
 
     modules = [autosfx.commands.setup,
-               autosfx.commands.powdersum,
-               autosfx.commands.centerfinder,
-               autosfx.commands.peakfinder,
-               autosfx.commands.indexer,
-               autosfx.commands.distoptimizer,
+               #autosfx.commands.powdersum,
+               #autosfx.commands.centerfinder,
+               #autosfx.commands.peakfinder,
+               #autosfx.commands.indexer,
+               #autosfx.commands.distoptimizer,
               ]
 
     subparsers = parser.add_subparsers(title='Choose a command')
