@@ -4,7 +4,7 @@ Experiment setup
 
 import argparse
 
-from autosfx import expSetup
+from geomcalib import expSetup
 
 def add_args(parser):
     parser.add_argument("-exp", "--exp", help="experiment name", default="", type=str)
@@ -29,7 +29,7 @@ def get_run(runs):
 def main(args):
 
     if args.det is None:
-        from autosfx import experiment
+        from geomcalib import experiment
         runs = get_run(args.run)
         exp = experiment.myExp(args.exp,runs[0])
         try: exp.Det

@@ -3,17 +3,17 @@
 def main():
     import argparse, os
     parser = argparse.ArgumentParser(description=__doc__)
-    import autosfx
-    parser.add_argument('--version', action='version', version='autosfx '+autosfx.__version__)
+    import geomcalib
+    parser.add_argument('--version', action='version', version='geomcalib '+geomcalib.__version__)
 
-    import autosfx.commands.setup
+    import geomcalib.commands.setup
     #import autosfx.commands.powdersum
     #import autosfx.commands.centerfinder
     #import autosfx.commands.peakfinder
     #import autosfx.commands.indexer
     #import autosfx.commands.distoptimizer
 
-    modules = [autosfx.commands.setup,
+    modules = [geomcalib.commands.setup,
                #autosfx.commands.powdersum,
                #autosfx.commands.centerfinder,
                #autosfx.commands.peakfinder,
